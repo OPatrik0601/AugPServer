@@ -1,0 +1,39 @@
+﻿@model AugPServer.Models.MetaDataModel
+
+@{
+    ViewData["Title"] = "MetaData";
+}
+
+<h1>MetaData</h1>
+
+<h4>Step 1</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="MetaData">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProjectName" class="control-label"></label>
+                <input asp-for="ProjectName" class="form-control" />
+                <span asp-validation-for="ProjectName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Authors" class="control-label"></label>
+                <input asp-for="Authors" class="form-control" />
+                <span asp-validation-for="Authors" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DOI" class="control-label"></label>
+                <input asp-for="DOI" class="form-control" />
+                <span asp-validation-for="DOI" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Next >" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,58 @@
+﻿@model AugPServer.Models.FigureModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Add models</h1>
+
+<h4>Step 3</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddFigure">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ObjPath" class="control-label"></label>
+                <input asp-for="ObjPath" class="form-control" />
+                <span asp-validation-for="ObjPath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MtlPath" class="control-label"></label>
+                <input asp-for="MtlPath" class="form-control" />
+                <span asp-validation-for="MtlPath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagePath" class="control-label"></label>
+                <select id="imageDropDown" onchange="setPicture();" asp-for="ImagePath" asp-items="Model.ImagePaths"></select>
+                <img id="imagePreview"
+                     style="max-height:500px;max-width:500px;"
+                     asp-append-version="true" />
+                <script>
+                    function setPicture() {
+                        var list = document.getElementById("imageDropDown");
+                        var image = document.getElementById("imagePreview");
+                        var value = list.options[list.selectedIndex].value;
+                        image.src = (value == "Null") ? "" : value;
+                    }
+                </script>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="FigureList">< Back to the list</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
