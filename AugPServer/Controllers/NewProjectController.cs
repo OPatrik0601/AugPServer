@@ -48,27 +48,21 @@ namespace AugPServer.Controllers
                 {
                     if (file.Length > 0)
                     {
-                        // getting fileName
-                        string fileName = Path.GetFileName(file.FileName);
+                        string fileName = Path.GetFileName(file.FileName); // getting fileName
+                        string myUniqueFileName = Convert.ToString(Guid.NewGuid()); // assigning Unique filename (Guid)
+                        string fileExtension = Path.GetExtension(fileName); // getting file extension
+                        string newFileName = myUniqueFileName + fileExtension; // concatenating FileName + FileExtension
 
-                        // assigning Unique filename (Guid)
-                        string myUniqueFileName = Convert.ToString(Guid.NewGuid());
+                        //handle temp files directory
+                        string tempDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "TempFiles");
+                        if (!Directory.Exists(tempDirectoryPath))
+                            Directory.CreateDirectory(tempDirectoryPath);
 
-                        // getting file extension
-                        string fileExtension = Path.GetExtension(fileName);
-
-                        // concatenating FileName + FileExtension
-                        string newFileName = myUniqueFileName + fileExtension;
-
-                        // combines two strings into a path.
-                        string filepath = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "TempFiles")).Root + $@"\~{this.SessionId()}\";
-                        
-                        // create the temp folder if it doesn't exist
+                        //handle the uploaded file path
+                        string filepath = new PhysicalFileProvider(tempDirectoryPath).Root + $@"\~{this.SessionId()}\";
                         if (!Directory.Exists(filepath))
                             Directory.CreateDirectory(filepath);
-
                         filepath += newFileName;
-
                         string pathToSaveInSession = $@"/TempFiles/~{this.SessionId()}/{newFileName}";
 
                         using (FileStream fs = System.IO.File.Create(filepath))
@@ -76,7 +70,7 @@ namespace AugPServer.Controllers
                             file.CopyTo(fs);
                             fs.Flush();
 
-                            pathsForImages.Add(pathToSaveInSession); //add the image paths to the list
+                            pathsForImages.Add(pathToSaveInSession); //add the image path to the list
                         }
 
                     }
