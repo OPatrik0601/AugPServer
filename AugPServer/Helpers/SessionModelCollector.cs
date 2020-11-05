@@ -11,5 +11,7 @@ namespace AugPServer.Helpers
         public MetaDataModel MetaData { get; set; }
         public List<string> UploadedImagePaths { get; set; }
         public List<FigureModel> Figures { get; set; }
+
+        public string SessionDirectoryPath { get; set; }
     }
 }

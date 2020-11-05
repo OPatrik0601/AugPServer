@@ -180,7 +180,12 @@ namespace AugPServer.Controllers
             //handle the uploaded file path
             string filepath = new PhysicalFileProvider(tempDirectoryPath).Root + $@"\~{this.SessionId()}\";
             if (!Directory.Exists(filepath))
+            {
                 Directory.CreateDirectory(filepath);
+                SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+                sessionModel.SessionDirectoryPath = filepath;
+                this.AddToSession("ProjectInfo", sessionModel);
+            }
         }
     }
 }

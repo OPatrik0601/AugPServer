@@ -10,8 +10,8 @@ namespace AugPServer.Models
     public class ProjectFileModel
     {
         public string PathToFile { get; set; }
-        [Required]
-        [DisplayName("Direct link to the file")]
+        [Required(ErrorMessage = "This field is required.")]
+        [DisplayName("Paste the copied link here:")]
         public string URLToFile { get; set; }
     }
 }

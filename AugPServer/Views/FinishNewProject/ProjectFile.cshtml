@@ -7,8 +7,11 @@
 <h1>The .augp file</h1>
 
 <h4>Step 4</h4>
-<p>Download the .augp file from here: <a asp-action="DownloadAugpFile">click here to download!</a></p>
-<hr />
+<ol>
+    <li>Click <a asp-action="DownloadAugpFile">here</a> to download the .augp file</li>
+    <li>Upload the downloaded .augp file somewhere, then copy the link</li>
+    <li>Paste the copied link to the input field down below</li>
+</ol>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ProjectFile">
@@ -19,14 +22,10 @@
                 <span asp-validation-for="URLToFile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Next >" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
