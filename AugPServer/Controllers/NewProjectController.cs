@@ -34,7 +34,8 @@ namespace AugPServer.Controllers
             {
                 sessionModel = new SessionModelCollector
                 {
-                    MetaData = model
+                    MetaData = model,
+                    SessionId = this.SessionId()
                 };
             }
             else //if exists just update (so the user edited the metadata)

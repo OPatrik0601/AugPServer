@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Xml;
 using AugPServer.Helpers;
 using AugPServer.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
+using QRCoder;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -20,6 +15,10 @@ namespace AugPServer.Controllers
     public class FinishNewProjectController : Controller
     {
         private readonly IWebHostEnvironment _env;
+
+        private const int glyphWidth = 53;
+        private const int glyphHeight = 76;
+        private const int qrSize = 38;
 
         public FinishNewProjectController(IWebHostEnvironment _environment)
         {
@@ -92,7 +91,8 @@ namespace AugPServer.Controllers
                 }
 
                 model.PathToFile = filepath;
-                this.AddToSession("ProjectFile", model);
+                sessionModel.ProjectFile = model;
+                this.AddToSession("ProjectInfo", sessionModel);
 
             } catch(Exception ex)
             {
@@ -102,38 +102,59 @@ namespace AugPServer.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProjectFile(ProjectFileModel model)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if(sessionModel != null)
+            {
+                sessionModel.ProjectFile = model;
+            }
+
+            this.AddToSession("ProjectInfo", sessionModel); //add metadata to the session
+            return RedirectToAction("NewImages");
+        }
+
         public ActionResult NewImages()
         {
             SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+
+            //create a directory in the user's session directory
             string pathToSaveNewImages = sessionModel.SessionDirectoryPath + @"\NewImages";
             if (!Directory.Exists(pathToSaveNewImages))
                 Directory.CreateDirectory(pathToSaveNewImages);
 
-            for (int i = 0; i < sessionModel.UploadedImagePaths.Count; i++)
+            for (int i = 0; i < sessionModel.Figures.Count; i++)
             {
-                using (Image<Rgba32> img1 = Image.Load<Rgba32>(_env.ContentRootPath + @"\Glyphs\glyph_0.png")) // the glyph img
-                using (Image<Rgba32> img2 = Image.Load<Rgba32>(_env.WebRootPath + sessionModel.UploadedImagePaths[i])) // the base image
-                using (Image<Rgba32> outputImage = new Image<Rgba32>(img2.Width, img2.Height)) // create output image of the correct dimensions
+                string QRCode = $"{sessionModel.ProjectFile.URLToFile};{i}"; //the content of the qr code
+                using (Image<Rgba32> img_glyph = Image.Load<Rgba32>(_env.ContentRootPath + @"\Glyphs\glyph_0.png")) // the glyph img
+                using (Image<Rgba32> img_base = Image.Load<Rgba32>(_env.WebRootPath + sessionModel.UploadedImagePaths[i])) // the base image
+                using (Image<Rgba32> img_qrCode = Image.Load<Rgba32>(createQRCode(QRCode))) // qr code img
+                using (Image<Rgba32> outputImage = new Image<Rgba32>(img_base.Width, img_base.Height)) // create output image of the correct dimensions
                 {
-                    img1.Mutate(o => o.Resize(new Size(100, 150))); //resize glyph
+                    img_glyph.Mutate(o => o.Resize(new Size(glyphWidth, glyphHeight))); //resize glyph
+                    img_qrCode.Mutate(o => o.Resize(new Size(qrSize, qrSize))); //resize qrcode
 
+                    //create the new image
                     outputImage.Mutate(o => o
-                        .DrawImage(img2, new Point(0, 0), 1f) // base img
-                        .DrawImage(img1, new Point(0, 0), 1f) // glyph
+                        .DrawImage(img_base, new Point(0, 0), 1f) // base img
+                        .DrawImage(img_glyph, new Point(0, 0), 1f) // glyph
+                        .DrawImage(img_qrCode, new Point(img_glyph.Width, 0), 1f) // qrCode next to the glyph
                     );
 
-                    outputImage.Save(@$"{pathToSaveNewImages}\ouput_{i}.png"); //save to the newimages folder
+                    outputImage.Save(@$"{pathToSaveNewImages}\output_{i}.png"); //save to the newimages folder
                 }
             }
 
-            return View();
+            return View(sessionModel);
         }
 
         public ActionResult DownloadAugpFile()
         {
-            ProjectFileModel pfm = this.GetFromSession<ProjectFileModel>("ProjectFile");
-            if (pfm != null) {
-                string filePath = pfm.PathToFile;
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.ProjectFile != null) {
+                string filePath = sessionModel.ProjectFile.PathToFile;
                 string fileName = "document.augp";
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
@@ -143,11 +164,18 @@ namespace AugPServer.Controllers
                 return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ProjectFile(ProjectFileModel model)
+        private byte[] createQRCode(string code)
         {
-            return RedirectToAction("NewImages");
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(code, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            System.Drawing.Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                qrCodeImage.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
+            }
         }
     }
 }

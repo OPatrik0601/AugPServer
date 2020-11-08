@@ -1,5 +1,21 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model AugPServer.Models.SessionModelCollector
+
 @{
+    ViewData["Title"] = "NewImages";
+}
+
+<h1>Your images are ready to use!</h1>
+
+<h4>Step 5</h4>
+<p>The new images: </p>
+<ul>
+    @for (int i = 0; i < Model.Figures.Count; i++)
+    {
+        string targetImg = $"/TempFiles/~{Model.SessionId}/NewImages/output_{i}.png";
+        <li><a href=@targetImg target="_blank">@Model.Figures[i].Name</a></li>
+    }
+</ul>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
