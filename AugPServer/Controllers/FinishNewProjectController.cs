@@ -41,7 +41,7 @@ namespace AugPServer.Controllers
                     XmlWriterSettings settings = new XmlWriterSettings() { Indent = true };
                     using (XmlWriter writer = XmlWriter.Create(fileStream, settings))
                     {
-                        writer.WriteStartDocument(true);
+                        writer.WriteStartDocument(false);
                         //start file
                         writer.WriteStartElement("AugmentedPaper");
 
@@ -115,7 +115,7 @@ namespace AugPServer.Controllers
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            return View(model);
+            return this.CheckViewFirst(model);
         }
 
         [HttpPost]
@@ -126,15 +126,18 @@ namespace AugPServer.Controllers
             if(sessionModel != null)
             {
                 sessionModel.ProjectFile = model;
+                sessionModel.IsFinished = true;
             }
 
-            this.AddToSession("ProjectInfo", sessionModel); //add metadata to the session
+            this.AddToSession("ProjectInfo", sessionModel);
             return RedirectToAction("NewImages");
         }
 
         public ActionResult NewImages()
         {
             SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if(sessionModel == null || sessionModel.Figures == null)
+                return View(sessionModel);
 
             //create a directory in the user's session directory
             string pathToSaveNewImages = sessionModel.SessionDirectoryPath + @"\NewImages";

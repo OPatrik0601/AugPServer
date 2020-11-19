@@ -14,5 +14,6 @@ namespace AugPServer.Models
         public List<AuthorModel> Authors { get; set; }
         public string SessionId { get; set; }
         public string SessionDirectoryPath { get; set; }
+        public bool IsFinished { get; set; }
     }
 }

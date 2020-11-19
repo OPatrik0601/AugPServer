@@ -4,9 +4,9 @@
     ViewData["Title"] = "EditAuthor";
 }
 
-<h1>Add author (edit)</h1>
+<h1>MetaData</h1>
 
-<h4>Step 2</h4>
+<h4>Step 2: Edit author</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,14 +23,11 @@
                 <span asp-validation-for="Affiliation" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <a asp-action="AuthorList" class="btn btn-outline-secondary">Back</a>
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="FigureList">Back to the list</a>
 </div>
 
 @section Scripts {

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<AugPServer.Models.FigureModel>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>Attached models</h1>
+
+<p>
+    <div class="form-group">
+        <a asp-action="AddFigure" class="btn btn-light">Add new model information</a>
+    </div>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ObjPath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MtlPath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ElementAt(i).Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ElementAt(i).ObjPath)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ElementAt(i).MtlPath)
+                </td>
+                <td>
+                    <img src="@Model.ElementAt(i).ImagePath"
+                         style="max-height:100px;max-width:100px;"
+                         asp-append-version="true" />
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditFigure", new { id = i }),
+                    @Html.ActionLink("Remove", "RemoveFigure", new { id = i })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="col-md-10 mt-2">
+    <a asp-controller="ImageUpload" asp-action="ImageUpload" class="btn btn-outline-secondary">Back</a>
+    <a asp-controller="FinishNewProject" asp-action="ProjectFile" class="btn btn-outline-success">Next</a>
+</div>
