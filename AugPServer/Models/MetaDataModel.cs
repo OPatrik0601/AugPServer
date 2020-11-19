@@ -10,10 +10,8 @@ namespace AugPServer.Models
     public class MetaDataModel
     {
         [Required]
-        [DisplayName("Project name")]
+        [DisplayName("Article name")]
         public string ProjectName { get; set; }
-        [Required]
-        public string Authors { get; set; }
         [Required]
         public string DOI { get; set; }
     }

@@ -42,7 +42,7 @@ namespace AugPServer.Controllers
                 sessionModel.MetaData = model;
 
             this.AddToSession("ProjectInfo", sessionModel); //add metadata to the session
-            return RedirectToAction("ImageUpload");
+            return RedirectToAction("AuthorList");
         }
 
         public ActionResult ImageUpload()
@@ -95,13 +95,74 @@ namespace AugPServer.Controllers
             return View();
         }
 
+        public ActionResult AuthorList()
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            return View((sessionModel.Authors != null) ? sessionModel.Authors : new List<AuthorModel>());
+        }
+
+        public ActionResult AddAuthor()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddAuthor(AuthorModel model)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.Authors == null)
+            {
+                sessionModel.Authors = new List<AuthorModel>();
+            }
+
+            sessionModel.Authors.Add(model); //add the new model to the list
+
+            this.AddToSession("ProjectInfo", sessionModel); //save in session
+            return RedirectToAction("AuthorList");
+        }
+
+        public ActionResult RemoveAuthor(int id)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.Authors != null)
+            {
+                sessionModel.Authors.RemoveAt(id);
+                this.AddToSession("ProjectInfo", sessionModel); //save in session
+            }
+
+            return RedirectToAction("AuthorList");
+        }
+
+        public ActionResult EditAuthor(int id)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.Authors != null)
+            {
+                if (sessionModel.Authors[id] != null)
+                {
+                    AuthorModel model = sessionModel.Authors[id];
+                    return View(model);
+                }
+            }
+
+            return View("AddAuthor");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditAuthor(int id, AuthorModel model)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            sessionModel.Authors[id] = model;
+            this.AddToSession("ProjectInfo", sessionModel); //save in session
+            return RedirectToAction("AuthorList");
+        }
+
         public ActionResult FigureList()
         {
             SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
-            if (sessionModel.Figures != null)
-                return View(sessionModel.Figures);
-            else
-                return View(new List<FigureModel>());
+            return View((sessionModel.Figures != null) ? sessionModel.Figures : new List<FigureModel>());
         }
 
         public ActionResult AddFigure()
@@ -110,6 +171,32 @@ namespace AugPServer.Controllers
             model.ImagePaths = getImagePaths();
 
             return View(model);
+        }
+
+        public ActionResult EditFigure(int id)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.Figures != null)
+            {
+                if (sessionModel.Figures[id] != null)
+                {
+                    FigureModel model = sessionModel.Figures[id];
+                    model.ImagePaths = getImagePaths();
+                    return View(model);
+                }
+            }
+
+            return View("AddModel");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditFigure(int id, FigureModel model)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            sessionModel.Figures[id] = model;
+            this.AddToSession("ProjectInfo", sessionModel); //save in session
+            return RedirectToAction("FigureList");
         }
 
         [HttpPost]
@@ -123,6 +210,7 @@ namespace AugPServer.Controllers
             }
 
             sessionModel.Figures.Add(model); //add the new model to the list
+
             this.AddToSession("ProjectInfo", sessionModel); //save in session
             return RedirectToAction("FigureList");
         }

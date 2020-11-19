@@ -1,0 +1,38 @@
+﻿@model AugPServer.Models.AuthorModel
+
+@{
+    ViewData["Title"] = "EditAuthor";
+}
+
+<h1>Add author (edit)</h1>
+
+<h4>Step 2</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditAuthor">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FullName" class="control-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Affiliation" class="control-label"></label>
+                <input asp-for="Affiliation" class="form-control" />
+                <span asp-validation-for="Affiliation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="FigureList">Back to the list</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -48,6 +48,7 @@
                      asp-append-version="true" />
             </td>
             <td>
+                @Html.ActionLink("Edit", "EditFigure", new { id = i }), 
                 @Html.ActionLink("Remove", "RemoveFigure", new { id = i })
             </td>
         </tr>
@@ -56,9 +57,9 @@
 </table>
 
 <div class="col-md-10 mt-2">
-    <a asp-controller="FinishNewProject" asp-action="ProjectFile" class="btn btn-success">Next ></a>
+    <a asp-controller="FinishNewProject" asp-action="ProjectFile" class="btn btn-success">Next</a>
 </div>
 
 <div>
-    <a asp-action="ImageUpload">< Back to the images</a>
+    <a asp-action="ImageUpload">Back to the images</a>
 </div>

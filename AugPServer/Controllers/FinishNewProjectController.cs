@@ -51,9 +51,25 @@ namespace AugPServer.Controllers
                         writer.WriteAttributeString("DOI", sessionModel.MetaData.DOI);
 
                         writer.WriteStartElement("Authors");
-                        //writer.WriteElementString("..", "1");
-                        //later when the user can add multiple authors
-                        writer.WriteEndElement();
+
+                        if (sessionModel.Authors != null)
+                        {
+                            foreach(var item in sessionModel.Authors)
+                            {
+                                writer.WriteStartElement("Author");
+
+                                writer.WriteAttributeString("Name", item.FullName);
+                                writer.WriteAttributeString("Affiliation", item.Affiliation);
+
+                                writer.WriteEndElement(); //</Figure>
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteComment("No authors found.");
+                        }
+
+                        writer.WriteEndElement(); //</Authors>
 
                         writer.WriteEndElement(); //</MetaData>
                         //METADATA ENDS

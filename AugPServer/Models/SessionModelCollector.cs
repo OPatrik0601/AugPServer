@@ -11,6 +11,7 @@ namespace AugPServer.Models
         public List<string> UploadedImagePaths { get; set; }
         public List<FigureModel> Figures { get; set; }
         public ProjectFileModel ProjectFile { get; set; }
+        public List<AuthorModel> Authors { get; set; }
         public string SessionId { get; set; }
         public string SessionDirectoryPath { get; set; }
     }

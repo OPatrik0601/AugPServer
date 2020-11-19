@@ -1,16 +1,16 @@
 ﻿@model AugPServer.Models.FigureModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Add models</h1>
+<h1>Add models (edit)</h1>
 
-<h4>Step 4</h4>
+<h4>Step 3</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddFigure">
+        <form asp-action="EditFigure">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -34,6 +34,7 @@
                      style="max-height:500px;max-width:500px;"
                      asp-append-version="true" />
                 <script>
+                    setPicture();
                     function setPicture() {
                         var list = document.getElementById("imageDropDown");
                         var image = document.getElementById("imagePreview");
@@ -43,14 +44,14 @@
                 </script>
             </div>
             <div class="form-group">
-                <input type="submit" value="Add" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="FigureList">Back to the list</a>
+    <a asp-action="FigureList">< Back to the list</a>
 </div>
 
 @section Scripts {
