@@ -1,0 +1,54 @@
+﻿@model AugPServer.Models.ImageModel
+
+@{
+    ViewData["Title"] = "EditImage";
+}
+
+<h1>EditImage</h1>
+
+<h4>ImageModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditImage">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <img src="@Model.Path"
+                     style="max-height:300px;max-width:300px;"
+                     asp-append-version="true" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="GlyphOutside" /> @Html.DisplayNameFor(model => model.GlyphOutside)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="GlyphSize" class="control-label"></label>
+                <select asp-for="GlyphSize" asp-items="Html.GetEnumSelectList<GlyphSizeChoises>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="GlyphSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GlyphPosition" class="control-label"></label>
+                <select asp-for="GlyphPosition" asp-items="Html.GetEnumSelectList<GlyphPositionChoises>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="GlyphPosition" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <a asp-action="ImageList" class="btn btn-outline-secondary">Back</a>
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

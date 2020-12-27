@@ -40,7 +40,7 @@ namespace AugPServer.Controllers
                 }
             }
 
-            return this.CheckViewFirst("AddModel");
+            return View("AddModel");
         }
 
         [HttpPost]
@@ -87,12 +87,12 @@ namespace AugPServer.Controllers
         {
             SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
             SelectListItem[] items;
-            if (sessionModel.UploadedImagePaths != null)
+            if (sessionModel.UploadedImages != null)
             { //there is at least 1 uploaded image
-                items = new SelectListItem[sessionModel.UploadedImagePaths.Count + 1]; //the first choice (index 0) is "no image attached", so list length + 1 is the new length
-                for (int i = 1; i < sessionModel.UploadedImagePaths.Count + 1; i++)
+                items = new SelectListItem[sessionModel.UploadedImages.Count + 1]; //the first choice (index 0) is "no image attached", so list length + 1 is the new length
+                for (int i = 1; i < sessionModel.UploadedImages.Count + 1; i++)
                 {
-                    items[i] = new SelectListItem() { Text = $"uploaded #{i}", Value = sessionModel.UploadedImagePaths[i - 1] }; //selection choice
+                    items[i] = new SelectListItem() { Text = sessionModel.UploadedImages[i - 1].Name, Value = sessionModel.UploadedImages[i - 1].Path }; //selection choice
                 }
             }
             else

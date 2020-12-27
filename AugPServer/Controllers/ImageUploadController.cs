@@ -18,14 +18,49 @@ namespace AugPServer.Controllers
             return this.CheckViewFirst();
         }
 
+        public ActionResult EditImage(int id)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.UploadedImages != null)
+            {
+                if (sessionModel.UploadedImages[id] != null)
+                {
+                    ImageModel model = sessionModel.UploadedImages[id];
+                    return this.CheckViewFirst(model);
+                }
+            }
+
+            return View("AddModel");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditImage(int id, ImageModel model)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+
+            model.Path = sessionModel.UploadedImages[id].Path; //don't change the path
+            sessionModel.UploadedImages[id] = model;
+            this.AddToSession("ProjectInfo", sessionModel); //save in session
+            return RedirectToAction("ImageList");
+        }
+
+        public ActionResult ImageList()
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+
+            return this.CheckViewFirst((sessionModel.UploadedImages != null) ? sessionModel.UploadedImages : new List<ImageModel>());
+        }
+
         [HttpPost]
         public ActionResult ImageUpload(List<IFormFile> files)
         {
-            List<string> pathsForImages = new List<string>();
+            List<ImageModel> pathsForImages = new List<ImageModel>();
             if (files != null)
             {
-                foreach (var file in files)
+                for (int i=0;i<files.Count;i++)
                 {
+                    IFormFile file = files[i];
                     if (file.Length > 0)
                     {
                         string fileName = Path.GetFileName(file.FileName); // getting fileName
@@ -42,7 +77,16 @@ namespace AugPServer.Controllers
                             file.CopyTo(fs);
                             fs.Flush();
 
-                            pathsForImages.Add(pathToSaveInSession); //add the image path to the list
+                            ImageModel newModel = new ImageModel()
+                            {
+                                Path = pathToSaveInSession,
+                                Name = $"img{i}:{DateTime.Now}",
+                                GlyphSize = GlyphSizeChoises.Medium,
+                                GlyphOutside = false,
+                                GlyphPosition = GlyphPositionChoises.TopLeft
+                            };
+
+                            pathsForImages.Add(newModel); //add the image path to the list
                         }
 
                     }
@@ -50,13 +94,13 @@ namespace AugPServer.Controllers
             }
 
             SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
-            if (sessionModel.UploadedImagePaths != null) //Does the user have an image array in the session already? If that's the case just append the new image list to the old one
+            if (sessionModel.UploadedImages != null) //Does the user have an image array in the session already? If that's the case just append the new image list to the old one
             {
-                sessionModel.UploadedImagePaths.AddRange(pathsForImages);
+                sessionModel.UploadedImages.AddRange(pathsForImages);
             }
             else
             {
-                sessionModel.UploadedImagePaths = pathsForImages;
+                sessionModel.UploadedImages = pathsForImages;
             }
 
             this.AddToSession("ProjectInfo", sessionModel);

@@ -4,8 +4,8 @@
     ViewData["Title"] = "List";
 }
 
-<h1>Attached models</h1>
-
+<h1>Manage attached models</h1>
+<h4>Step 5</h4>
 <p>
     <div class="form-group">
         <a asp-action="AddFigure" class="btn btn-light">Add new model information</a>
@@ -57,6 +57,6 @@
 </table>
 
 <div class="col-md-10 mt-2">
-    <a asp-controller="ImageUpload" asp-action="ImageUpload" class="btn btn-outline-secondary">Back</a>
+    <a asp-controller="ImageUpload" asp-action="ImageList" class="btn btn-outline-secondary">Back</a>
     <a asp-controller="FinishNewProject" asp-action="ProjectFile" class="btn btn-outline-success">Next</a>
 </div>

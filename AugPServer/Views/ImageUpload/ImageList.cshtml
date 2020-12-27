@@ -1,0 +1,67 @@
+﻿@model IEnumerable<AugPServer.Models.ImageModel>
+
+@{
+    ViewData["Title"] = "ImageList";
+}
+
+<h1>Manage uploaded images</h1>
+<h4>Step 4</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Path)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GlyphOutside)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GlyphSize)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GlyphPosition)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Path"
+                         style="max-height:100px;max-width:100px;"
+                         asp-append-version="true" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @{
+                        string outside = "No";
+                        if (item.GlyphOutside)
+                            outside = "Yes";
+                    }
+                    @outside
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GlyphSize)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GlyphPosition)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditImage", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="col-md-10 mt-2">
+    <a asp-controller="ImageUpload" asp-action="ImageUpload" class="btn btn-outline-secondary">Back</a>
+    <a asp-controller="Figure" asp-action="FigureList" class="btn btn-outline-success">Next</a>
+</div>

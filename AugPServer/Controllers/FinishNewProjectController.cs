@@ -148,7 +148,7 @@ namespace AugPServer.Controllers
             {
                 string QRCode = $"{sessionModel.ProjectFile.URLToFile};{i}"; //the content of the qr code
                 using (Image<Rgba32> img_glyph = Image.Load<Rgba32>(_env.ContentRootPath + @"\Glyphs\glyph_0.png")) // the glyph img
-                using (Image<Rgba32> img_base = Image.Load<Rgba32>(_env.WebRootPath + sessionModel.UploadedImagePaths[i])) // the base image
+                using (Image<Rgba32> img_base = Image.Load<Rgba32>(_env.WebRootPath + sessionModel.UploadedImages[i].Path)) // the base image
                 using (Image<Rgba32> img_qrCode = Image.Load<Rgba32>(createQRCode(QRCode))) // qr code img
                 using (Image<Rgba32> outputImage = new Image<Rgba32>(img_base.Width, img_base.Height)) // create output image of the correct dimensions
                 {

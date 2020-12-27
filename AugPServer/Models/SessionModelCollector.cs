@@ -8,7 +8,7 @@ namespace AugPServer.Models
     public class SessionModelCollector
     {
         public MetaDataModel MetaData { get; set; }
-        public List<string> UploadedImagePaths { get; set; }
+        public List<ImageModel> UploadedImages { get; set; }
         public List<FigureModel> Figures { get; set; }
         public ProjectFileModel ProjectFile { get; set; }
         public List<AuthorModel> Authors { get; set; }
