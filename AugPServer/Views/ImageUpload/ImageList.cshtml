@@ -28,8 +28,9 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @for (int i = 0; i < Model.Count(); i++)
         {
+            ImageModel item = Model.ElementAt(i);
             <tr>
                 <td>
                     <img src="@item.Path"
@@ -54,7 +55,7 @@
                     @Html.DisplayFor(modelItem => item.GlyphPosition)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "EditImage", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Edit", "EditImage", new { id=i })
                 </td>
             </tr>
         }

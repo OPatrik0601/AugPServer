@@ -24,7 +24,7 @@
                 @Html.DisplayNameFor(model => model.MtlPath)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
+                @Html.DisplayNameFor(model => model.Image.Path)
             </th>
             <th></th>
         </tr>
@@ -43,7 +43,7 @@
                     @Html.DisplayFor(modelItem => Model.ElementAt(i).MtlPath)
                 </td>
                 <td>
-                    <img src="@Model.ElementAt(i).ImagePath"
+                    <img src="@Model.ElementAt(i).Image.Path"
                          style="max-height:100px;max-width:100px;"
                          asp-append-version="true" />
                 </td>

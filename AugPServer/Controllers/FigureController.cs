@@ -48,6 +48,7 @@ namespace AugPServer.Controllers
         public ActionResult EditFigure(int id, FigureModel model)
         {
             SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            model.Image = searchImageByPath(model.ImagePath);
             sessionModel.Figures[id] = model;
             this.AddToSession("ProjectInfo", sessionModel); //save in session
             return RedirectToAction("FigureList");
@@ -63,6 +64,7 @@ namespace AugPServer.Controllers
                 sessionModel.Figures = new List<FigureModel>();
             }
 
+            model.Image = searchImageByPath(model.ImagePath);
             sessionModel.Figures.Add(model); //add the new model to the list
 
             this.AddToSession("ProjectInfo", sessionModel); //save in session
@@ -102,6 +104,26 @@ namespace AugPServer.Controllers
 
             items[0] = new SelectListItem() { Text = "No image attached.", Value = "Null" };
             return items;
+        }
+
+        /// <summary>
+        /// Search in the uploaded images for a specific path.
+        /// </summary>
+        /// <param name="path">The path for search</param>
+        /// <returns>The uploaded ImageModel</returns>
+        private ImageModel searchImageByPath(string path)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if(sessionModel.UploadedImages != null)
+            {
+                foreach(ImageModel img in sessionModel.UploadedImages)
+                {
+                    if (img.Path == path)
+                        return img;
+                }
+            }
+
+            return null;
         }
     }
 }

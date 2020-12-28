@@ -16,10 +16,6 @@ namespace AugPServer.Controllers
     {
         private readonly IWebHostEnvironment _env;
 
-        private const int glyphWidth = 53;
-        private const int glyphHeight = 76;
-        private const int qrSize = 38;
-
         public FinishNewProjectController(IWebHostEnvironment _environment)
         {
             _env = _environment;
@@ -146,23 +142,88 @@ namespace AugPServer.Controllers
 
             for (int i = 0; i < sessionModel.Figures.Count; i++)
             {
+                ImageModel img = sessionModel.UploadedImages[i];
+                int glyphWidth = 0;
+                int glyphHeight = 0;
+
+                //set the sizes
+                switch (img.GlyphSize)
+                {
+                    case GlyphSizeChoises.Small:
+                        glyphWidth = Consts.GlyphWidthSmall;
+                        glyphHeight = Consts.GlyphHeightSmall;
+                        break;
+                    case GlyphSizeChoises.Medium:
+                        glyphWidth = Consts.GlyphWidthMedium;
+                        glyphHeight = Consts.GlyphHeightMedium;
+                        break;
+                    case GlyphSizeChoises.Big:
+                        glyphWidth = Consts.GlyphWidthBig;
+                        glyphHeight = Consts.GlyphHeightBig;
+                        break;
+                }
+                int qrSize = glyphWidth;
+
                 string QRCode = $"{sessionModel.ProjectFile.URLToFile};{i}"; //the content of the qr code
                 using (Image<Rgba32> img_glyph = Image.Load<Rgba32>(_env.ContentRootPath + @"\Glyphs\glyph_0.png")) // the glyph img
-                using (Image<Rgba32> img_base = Image.Load<Rgba32>(_env.WebRootPath + sessionModel.UploadedImages[i].Path)) // the base image
-                using (Image<Rgba32> img_qrCode = Image.Load<Rgba32>(createQRCode(QRCode))) // qr code img
-                using (Image<Rgba32> outputImage = new Image<Rgba32>(img_base.Width, img_base.Height)) // create output image of the correct dimensions
+                using (Image<Rgba32> img_base = Image.Load<Rgba32>(_env.WebRootPath + img.Path)) // the base image
+                using (Image<Rgba32> img_qrCode = Image.Load<Rgba32>(createQRCode(QRCode)))// qr code img
                 {
-                    img_glyph.Mutate(o => o.Resize(new Size(glyphWidth, glyphHeight))); //resize glyph
-                    img_qrCode.Mutate(o => o.Resize(new Size(qrSize, qrSize))); //resize qrcode
+                    int outputWidth = img_base.Width;
+                    int outputHeight = img_base.Height;
 
-                    //create the new image
-                    outputImage.Mutate(o => o
-                        .DrawImage(img_base, new Point(0, 0), 1f) // base img
-                        .DrawImage(img_glyph, new Point(0, 0), 1f) // glyph
-                        .DrawImage(img_qrCode, new Point(img_glyph.Width, 0), 1f) // qrCode next to the glyph
-                    );
+                    //the glyph and the qr code bigger than the base img? (shouldn't be, but handle it)
+                    if (outputWidth < glyphWidth + qrSize)
+                        outputWidth = glyphWidth + qrSize;
+                    if (outputHeight < glyphHeight + qrSize)
+                        outputHeight = glyphHeight + qrSize;
 
-                    outputImage.Save(@$"{pathToSaveNewImages}\output_{i}.png"); //save to the newimages folder
+                    //if the glyph is outside we need a bigger img
+                    if(img.GlyphOutside)
+                        outputWidth += glyphWidth;
+
+                    using (Image<Rgba32> outputImage = new Image<Rgba32>(outputWidth, outputHeight)) // create output image of the correct dimensions
+                    {
+                        img_glyph.Mutate(o => o.Resize(new Size(glyphWidth, glyphHeight))); //resize glyph
+                        img_qrCode.Mutate(o => o.Resize(new Size(qrSize, qrSize))); //resize qrcode
+
+                        int imgX = 0;
+                        int imgY = 0;
+                        int baseImgOffsetX = 0;
+                        switch(img.GlyphPosition)
+                        {
+                            case GlyphPositionChoises.BottomLeft:
+                                imgX = 0;
+                                imgY = outputHeight - glyphHeight - qrSize;
+
+                                if(img.GlyphOutside)
+                                    baseImgOffsetX = glyphWidth;
+                                break;
+                            case GlyphPositionChoises.BottomRight:
+                                imgX = outputWidth - glyphWidth;
+                                imgY = outputHeight - glyphHeight - qrSize;
+                                break;
+                            case GlyphPositionChoises.TopLeft:
+                                imgX = 0;
+                                imgY = 0;
+                                if (img.GlyphOutside)
+                                    baseImgOffsetX = glyphWidth;
+                                break;
+                            case GlyphPositionChoises.TopRight:
+                                imgX = outputWidth - glyphWidth;
+                                imgY = 0;
+                                break;
+                        }
+
+                        //create the new image
+                        outputImage.Mutate(o => o
+                            .DrawImage(img_base, new Point(baseImgOffsetX, 0), 1f) // base img
+                            .DrawImage(img_glyph, new Point(imgX, imgY), 1f) // glyph
+                            .DrawImage(img_qrCode, new Point(imgX, imgY + img_glyph.Height), 1f) // qrCode under to the glyph
+                        );
+
+                        outputImage.Save(@$"{pathToSaveNewImages}\output_{i}.png"); //save to the newimages folder
+                    }
                 }
             }
 
