@@ -1,7 +1,7 @@
 ﻿@model AugPServer.Models.ProjectFileModel
 
 @{
-    ViewData["Title"] = "ProjectFile";
+    ViewData["Title"] = "Your .augp file";
 }
 
 <h1>The .augp file</h1>
@@ -22,6 +22,7 @@
                 <span asp-validation-for="URLToFile" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <a asp-action="FigureList" asp-controller="Figure" class="btn btn-outline-secondary">Back</a>
                 <input type="submit" value="Finish" class="btn btn-outline-success" />
             </div>
         </form>

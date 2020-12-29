@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AugPServer.Helpers;
 using AugPServer.Models;
+using AugPServer.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
@@ -14,6 +15,12 @@ namespace AugPServer.Controllers
     public class ImageUploadController : Controller
     {
         public ActionResult ImageUpload()
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            return this.CheckViewFirst(sessionModel.UploadedImages);
+        }
+
+        public ActionResult EditAllImages()
         {
             return this.CheckViewFirst();
         }
@@ -45,6 +52,29 @@ namespace AugPServer.Controllers
             return RedirectToAction("ImageList");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditAllImages(EditAllImagesViewModel model)
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.UploadedImages != null)
+            {
+                foreach(ImageModel img in sessionModel.UploadedImages)
+                {
+                    if(model.GlyphOutside != null)
+                        img.GlyphOutside = (bool)model.GlyphOutside;
+
+                    if(model.GlyphPosition != null)
+                        img.GlyphPosition = (GlyphPositionChoises)model.GlyphPosition;
+
+                    if(model.GlyphSize != null)
+                        img.GlyphSize = (GlyphSizeChoises)model.GlyphSize;
+                }
+                this.AddToSession("ProjectInfo", sessionModel); //save in session
+            }
+            return RedirectToAction("ImageList");
+        }
+
         public ActionResult ImageList()
         {
             SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
@@ -61,6 +91,9 @@ namespace AugPServer.Controllers
                 for (int i=0;i<files.Count;i++)
                 {
                     IFormFile file = files[i];
+                    if (!UploadedFileIsImage.Check(file))
+                        continue;
+
                     if (file.Length > 0)
                     {
                         string fileName = Path.GetFileName(file.FileName); // getting fileName
@@ -88,7 +121,6 @@ namespace AugPServer.Controllers
 
                             pathsForImages.Add(newModel); //add the image path to the list
                         }
-
                     }
                 }
             }
@@ -104,7 +136,7 @@ namespace AugPServer.Controllers
             }
 
             this.AddToSession("ProjectInfo", sessionModel);
-            return View();
+            return View(sessionModel.UploadedImages);
         }
 
         private string UserDirectoryPath

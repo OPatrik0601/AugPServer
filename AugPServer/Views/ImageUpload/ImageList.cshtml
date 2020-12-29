@@ -1,11 +1,16 @@
 ﻿@model IEnumerable<AugPServer.Models.ImageModel>
 
 @{
-    ViewData["Title"] = "ImageList";
+    ViewData["Title"] = "Images";
 }
 
 <h1>Manage uploaded images</h1>
-<h4>Step 4</h4>
+<h4>Step 4: Image list</h4>
+<p>
+    <div class="form-group">
+        <a asp-action="EditAllImages" class="btn btn-light">Edit all</a>
+    </div>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -43,7 +48,7 @@
                 <td>
                     @{
                         string outside = "No";
-                        if (item.GlyphOutside)
+                        if (item.GlyphOutside == true)
                             outside = "Yes";
                     }
                     @outside
@@ -55,7 +60,7 @@
                     @Html.DisplayFor(modelItem => item.GlyphPosition)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "EditImage", new { id=i })
+                    @Html.ActionLink("Edit", "EditImage", new { id = i })
                 </td>
             </tr>
         }

@@ -1,0 +1,44 @@
+﻿@model AugPServer.ViewModels.EditAllImagesViewModel
+
+@{
+    ViewData["Title"] = "Edit all images";
+}
+
+<h1>Manage uploaded images</h1>
+<h4>Step 4: Edit all images</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditAllImages">
+            <div class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="GlyphOutside" class="control-label"></label>
+                <select asp-for="GlyphOutside">
+                    <option selected="selected" value="">Don't change</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="GlyphSize" class="control-label"></label>
+                <select asp-for="GlyphSize" asp-items="Html.GetEnumSelectList<GlyphSizeChoises>()">
+                    <option selected="selected" value="">Don't change</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="GlyphPosition" class="control-label"></label>
+                <select asp-for="GlyphPosition" asp-items="Html.GetEnumSelectList<GlyphPositionChoises>()">
+                    <option selected="selected" value="">Don't change</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <a asp-action="ImageList" class="btn btn-outline-secondary">Back</a>
+                <input type="submit" value="Apply to all uploaded images" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
