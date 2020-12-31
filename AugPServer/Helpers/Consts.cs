@@ -14,5 +14,7 @@ namespace AugPServer.Helpers
         public const int GlyphHeightSmall = 76;
         public const int GlyphHeightMedium = 113;
         public const int GlyphHeightBig = 151;
+
+        public const int SessionTimeOutInHours = 3;
     }
 }

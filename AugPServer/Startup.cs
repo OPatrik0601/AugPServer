@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AugPServer.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,7 +26,7 @@ namespace AugPServer
         {
             services.AddControllersWithViews();
             services.AddSession(options => {
-                options.IdleTimeout = System.TimeSpan.FromMinutes(120);
+                options.IdleTimeout = System.TimeSpan.FromHours(Consts.SessionTimeOutInHours);
             });
         }
 

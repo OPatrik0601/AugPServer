@@ -143,13 +143,13 @@ namespace AugPServer.Controllers
         {
             get
             {
-                CreateUserDirectoryPathIfNotExists();
+                createUserDirectoryPathIfNotExists();
                 string tempDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "TempFiles");
                 return new PhysicalFileProvider(tempDirectoryPath).Root + $@"\~{this.SessionId()}\";
             }
         }
 
-        private void CreateUserDirectoryPathIfNotExists()
+        private void createUserDirectoryPathIfNotExists()
         {
             //handle temp files directory
             string tempDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "TempFiles");
@@ -164,6 +164,30 @@ namespace AugPServer.Controllers
                 SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
                 sessionModel.SessionDirectoryPath = filepath;
                 this.AddToSession("ProjectInfo", sessionModel);
+            }
+
+            deleteOldArticleDirectories();
+        }
+
+        /// <summary>
+        /// Deletes every session/article directory that is created more then [Consts.SessionTimeOutInHours] ago.
+        /// </summary>
+        private void deleteOldArticleDirectories()
+        {
+            string tempDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "TempFiles"); //temp file folder
+            if (Directory.Exists(tempDirectoryPath))
+            {
+                string[] directories = Directory.GetDirectories(tempDirectoryPath); //get all the session directories inside the temp file folder
+                for (int i = 0; i < directories.Length; i++)
+                {
+                    if (
+                        (DateTime.Now - Directory.GetCreationTime(directories[i])).TotalHours > Consts.SessionTimeOutInHours //is the hours between now and the creation date more then the session timeout?
+                        )
+                    {
+                        System.Diagnostics.Debug.WriteLine("Remove: " + directories[i]);
+                        Directory.Delete(directories[i], true); //delete directory
+                    }
+                }
             }
         }
     }
