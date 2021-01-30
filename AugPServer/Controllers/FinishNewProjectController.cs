@@ -257,5 +257,28 @@ namespace AugPServer.Controllers
                 return stream.ToArray();
             }
         }
+
+        public ActionResult StartNewProject()
+        {
+            deleteCurrentProjectDirectory();
+            this.RemoveFromSession("ProjectInfo");
+            return RedirectToAction("Index", "Page");
+        }
+
+        /// <summary>
+        /// Delete current project directory
+        /// </summary>
+        private void deleteCurrentProjectDirectory()
+        {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+
+            if (Directory.Exists(sessionModel.SessionDirectoryPath))
+            {
+                {
+                    System.Diagnostics.Debug.WriteLine("Remove: " + sessionModel.SessionDirectoryPath);
+                    Directory.Delete(sessionModel.SessionDirectoryPath, true); //delete directory
+                }
+            }
+        }
     }
 }

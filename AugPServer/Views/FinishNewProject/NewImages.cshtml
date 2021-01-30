@@ -24,7 +24,18 @@
         }
     }
 </ul>
+<button type="button" class="btn btn-danger" onclick="confirmNewArticle()">Start a new article</button>
+<script>
+    function confirmNewArticle() {
+        var conf = confirm("Are you sure? The current article will be no longer available: make sure to save your images if needed!");
+        if (conf) {
+            window.location.href = '/FinishNewProject/StartNewProject';
+        }
+    }
+</script>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
