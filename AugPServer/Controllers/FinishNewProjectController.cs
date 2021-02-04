@@ -74,13 +74,14 @@ namespace AugPServer.Controllers
                         writer.WriteStartElement("Figures");
 
                         //Figures
-                        if (sessionModel.Figures != null)
+                        if (sessionModel.Figures != null && sessionModel.Figures.Count > 0)
                         {
                             for (int i = 0; i < sessionModel.Figures.Count; i++)
                             {
                                 writer.WriteStartElement("Figure");
 
                                 writer.WriteAttributeString("Id", i.ToString());
+                                writer.WriteAttributeString("Title", sessionModel.Figures[i].Name);
                                 writer.WriteAttributeString("ObjFile", sessionModel.Figures[i].ObjPath);
                                 writer.WriteAttributeString("MtlFile", sessionModel.Figures[i].MtlPath);
 

@@ -18,5 +18,10 @@ namespace AugPServer.Controllers
         {
             return View();
         }
+
+        public ActionResult Howtouse()
+        {
+            return View();
+        }
     }
 }
