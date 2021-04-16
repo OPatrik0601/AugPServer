@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Xml;
 using AugPServer.Helpers;
 using AugPServer.Models;
@@ -10,8 +12,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace AugPServer.Controllers
-{
+namespace AugPServer.Controllers {
     public class FinishNewProjectController : Controller
     {
         private readonly IWebHostEnvironment _env;
@@ -141,9 +142,10 @@ namespace AugPServer.Controllers
             if (!Directory.Exists(pathToSaveNewImages))
                 Directory.CreateDirectory(pathToSaveNewImages);
 
+            HashSet<string> imageNames = new HashSet<string>();
             for (int i = 0; i < sessionModel.Figures.Count; i++)
             {
-                ImageModel img = sessionModel.UploadedImages[i];
+                ImageModel img = sessionModel.Figures[i].Image;
                 int glyphWidth = 0;
                 int glyphHeight = 0;
 
@@ -223,10 +225,19 @@ namespace AugPServer.Controllers
                             .DrawImage(img_qrCode, new Point(imgX, imgY + img_glyph.Height), 1f) // qrCode under to the glyph
                         );
 
-                        outputImage.Save(@$"{pathToSaveNewImages}\output_{i}.png"); //save to the newimages folder
+                        string imageName = $"{img.Name}";
+                        Random rnd = new Random();
+                        while (imageNames.Contains(imageName) || !isFileNameOk(imageName)) {
+                            imageName = $"output{rnd.Next(0, 1000)}";
+                        }
+                        imageNames.Add(imageName);
+                        outputImage.Save(@$"{pathToSaveNewImages}\{imageName}.png"); //save to the newimages folder
+                        sessionModel.Figures[i].FinalImageName = imageName;
                     }
                 }
             }
+
+            ZipFile.CreateFromDirectory(pathToSaveNewImages, @$"{sessionModel.SessionDirectoryPath}\output_images.zip");
 
             return View(sessionModel);
         }
@@ -241,6 +252,16 @@ namespace AugPServer.Controllers
                 byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
 
                 return File(fileBytes, "application/force-download", fileName);
+            } else
+                return View();
+        }
+
+        public ActionResult DownloadImageZIP() {
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if (sessionModel.IsFinished) {
+                string filePath = $@"{sessionModel.SessionDirectoryPath}\output_images.zip";
+                byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                return File(fileBytes, "application/force-download", "output_images.zip");
             } else
                 return View();
         }
@@ -280,6 +301,20 @@ namespace AugPServer.Controllers
                     Directory.Delete(sessionModel.SessionDirectoryPath, true); //delete directory
                 }
             }
+        }
+
+        private bool isFileNameOk(string fileName) {
+            char[] invalidChars = Path.GetInvalidFileNameChars();
+
+            foreach(char c in fileName) {             
+                foreach(char invalidChar in invalidChars) {
+                    if(invalidChar == c) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

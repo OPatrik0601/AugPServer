@@ -22,6 +22,7 @@ namespace AugPServer.Models
         [DisplayName("Attached image")]
         public string ImagePath { get; set; }
         public ImageModel Image { get; set; }
+        public string FinalImageName { get; set; }
         public IEnumerable<SelectListItem> ImagePaths { get; set; }
     }
 }

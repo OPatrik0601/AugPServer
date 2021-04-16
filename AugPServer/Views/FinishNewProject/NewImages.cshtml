@@ -14,7 +14,7 @@
         {
             for (int i = 0; i < Model.Figures.Count; i++)
             {
-                string targetImg = $"/TempFiles/~{Model.SessionId}/NewImages/output_{i}.png";
+                string targetImg = $"/TempFiles/~{Model.SessionId}/NewImages/{Model.Figures[i].FinalImageName}.png";
                 <li><a href=@targetImg target="_blank">@Model.Figures[i].Name</a></li>
             }
         }
@@ -24,6 +24,7 @@
         }
     }
 </ul>
+<a asp-action="DownloadImageZIP">Download all as .zip</a><br /><br />
 <button type="button" class="btn btn-danger" onclick="confirmNewArticle()">Start a new article</button>
 <script>
     function confirmNewArticle() {

@@ -97,6 +97,7 @@ namespace AugPServer.Controllers
                     if (file.Length > 0)
                     {
                         string fileName = Path.GetFileName(file.FileName); // getting fileName
+                        string fileNameWithoutType = Path.GetFileNameWithoutExtension(file.FileName);
                         string myUniqueFileName = Convert.ToString(Guid.NewGuid()); // assigning Unique filename (Guid)
                         string fileExtension = Path.GetExtension(fileName); // getting file extension
                         string newFileName = myUniqueFileName + fileExtension; // concatenating FileName + FileExtension
@@ -113,7 +114,7 @@ namespace AugPServer.Controllers
                             ImageModel newModel = new ImageModel()
                             {
                                 Path = pathToSaveInSession,
-                                Name = $"img{i}:{DateTime.Now}",
+                                Name = fileNameWithoutType,
                                 GlyphSize = GlyphSizeChoises.Medium,
                                 GlyphOutside = false,
                                 GlyphPosition = GlyphPositionChoises.TopLeft
