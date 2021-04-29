@@ -33,8 +33,7 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Count(); i++)
-        {
+        @for (int i = 0; i < Model.Count(); i++) {
             ImageModel item = Model.ElementAt(i);
             <tr>
                 <td>
@@ -71,3 +70,5 @@
     <a asp-controller="ImageUpload" asp-action="ImageUpload" class="btn btn-outline-secondary">Back</a>
     <a asp-controller="Figure" asp-action="FigureList" class="btn btn-outline-success">Next</a>
 </div>
+
+<button type="button" class="removeButtonBg" onclick="confirmNewArticle()">Start a new article</button>

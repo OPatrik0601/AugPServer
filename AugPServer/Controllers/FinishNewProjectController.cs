@@ -282,7 +282,9 @@ namespace AugPServer.Controllers {
 
         public ActionResult StartNewProject()
         {
-            deleteCurrentProjectDirectory();
+            SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+            if(sessionModel != null && sessionModel.SessionDirectoryPath != "")
+                deleteCurrentProjectDirectory();
             this.RemoveFromSession("ProjectInfo");
             return RedirectToAction("Index", "Page");
         }

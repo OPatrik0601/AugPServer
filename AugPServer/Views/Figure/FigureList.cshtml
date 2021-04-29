@@ -30,8 +30,7 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Count(); i++)
-        {
+        @for (int i = 0; i < Model.Count(); i++) {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => Model.ElementAt(i).Name)
@@ -60,3 +59,4 @@
     <a asp-controller="ImageUpload" asp-action="ImageList" class="btn btn-outline-secondary">Back</a>
     <a asp-controller="FinishNewProject" asp-action="ProjectFile" class="btn btn-outline-success">Next</a>
 </div>
+<button type="button" class="removeButtonBg" onclick="confirmNewArticle()">Start a new article</button>

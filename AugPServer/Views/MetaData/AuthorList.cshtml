@@ -26,8 +26,7 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Count(); i++)
-        {
+        @for (int i = 0; i < Model.Count(); i++) {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => Model.ElementAt(i).FullName)
@@ -36,7 +35,7 @@
                     @Html.DisplayFor(modelItem => Model.ElementAt(i).Affiliation)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "EditAuthor", new { id = i }), 
+                    @Html.ActionLink("Edit", "EditAuthor", new { id = i }),
                     @Html.ActionLink("Delete", "RemoveAuthor", new { id = i })
                 </td>
             </tr>
@@ -48,3 +47,4 @@
     <a asp-action="MetaData" class="btn btn-outline-secondary">Back</a>
     <a asp-controller="ImageUpload" asp-action="ImageUpload" class="btn btn-outline-success">Next</a>
 </div>
+<button type="button" class="removeButtonBg" onclick="confirmNewArticle()">Start a new article</button>

@@ -34,9 +34,13 @@ namespace AugPServer.Models
 
     public enum GlyphPositionChoises
     {
+        [Display(Name = "Top left")]
         TopLeft,
+        [Display(Name = "Top right")]
         TopRight,
+        [Display(Name = "Bottom left")]
         BottomLeft,
+        [Display(Name = "Bottom right")]
         BottomRight
     }
 }

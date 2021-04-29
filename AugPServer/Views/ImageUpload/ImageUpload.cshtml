@@ -24,8 +24,7 @@
                 </div>
                 <br />
                 @{
-                    if (Model != null)
-                    {
+                    if (Model != null) {
                         <div class="alert alert-success col-md-10" role="alert">
                             This article currently has <b>@Model.Count()</b> images.
                         </div>
@@ -41,6 +40,7 @@
     </div>
 </div>
 
+<button type="button" class="removeButtonBg" onclick="confirmNewArticle()">Start a new article</button>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
