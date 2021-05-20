@@ -32,6 +32,10 @@ namespace AugPServer.Controllers {
             try
             {
                 SessionModelCollector sessionModel = this.GetFromSession<SessionModelCollector>("ProjectInfo");
+                if(sessionModel.Figures.Count <= 0) {
+                    return RedirectToAction("Figure", "FigureList");
+                }
+
                 var filepath = sessionModel.SessionDirectoryPath + @"\document.augp";
                 using (FileStream fileStream = new FileStream(filepath, FileMode.Create)) //create the .augp file in the user's temp folder
                 {
@@ -228,7 +232,7 @@ namespace AugPServer.Controllers {
                         string imageName = $"{img.Name}";
                         Random rnd = new Random();
                         while (imageNames.Contains(imageName) || !isFileNameOk(imageName)) {
-                            imageName = $"output{rnd.Next(0, 1000)}";
+                            imageName = $"output{rnd.Next(0, 100000)}";
                         }
                         imageNames.Add(imageName);
                         outputImage.Save(@$"{pathToSaveNewImages}\{imageName}.png"); //save to the newimages folder

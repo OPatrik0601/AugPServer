@@ -78,4 +78,25 @@ body {
     overflow: hidden;
     outline: none;
     color: red;
+
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    font-size: 18px;
+}
+
+.bottomMenu {
+    float: right;
+}
+
+.downloadTable {
+    border: 1px solid black;
+    width: 75%;
+    margin-left: 10%;
+}
+
+.downloadTable tr, td {
+    border: 1px solid black;
+    padding: 10px;
+    width: 25%;
 }
